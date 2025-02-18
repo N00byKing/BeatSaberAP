@@ -1,0 +1,19 @@
+{
+    "author": "N00byKing",
+    "description": [
+        "Archipelago Integration for Beat Saber"
+    ],
+    "gameVersion": "1.40.0",
+    "id": "BeatSaberArchipelago",
+    "name": "BeatSaberAP",
+    "version": "0.0.1",
+    "links": {
+        "project-source": "https://github.com/N00byKing/BeatSaberAP/",
+        "donate": "https://github.com/sponsors/N00byKing"
+    },
+    "dependson": {
+        "BSIPA": "^4.2.2",
+        "BS Utils": "^1.12.1",
+        "SongDetailsCache": "^1.4.0",
+    }
+}
