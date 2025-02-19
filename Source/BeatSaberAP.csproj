@@ -253,6 +253,7 @@
         <Reference Include="0Harmony">
             <HintPath>$(BeatSaberDir)/Libs/0Harmony.dll</HintPath>
             <Private>False</Private>
+            <SpecificVersion>False</SpecificVersion>
         </Reference>
         <Reference Include="Hive.Versioning">
             <HintPath>$(BeatSaberDir)/Libs/Hive.Versioning.dll</HintPath>
@@ -282,6 +283,10 @@
             <HintPath>$(BeatSaberDir)/Plugins/SiraUtil.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="CustomCampaigns">
+            <HintPath>$(BeatSaberDir)/Plugins/Custom Campaigns.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
@@ -291,6 +296,6 @@
 
     <Target Name="CopyMod" AfterTargets="PostBuildEvent">
         <Message Importance="high" Text="Bundling Mod..." />
-        <Exec Command="/home/archuser/.dotnet/tools/ilrepack $(TargetPath) Archipelago.MultiClient.Net.dll --lib:$(BeatSaberDir)/'Beat Saber_Data'/Managed/ --out:artifact/BeatSaberAP_bundle.dll"/>
+        <Exec Command="/home/archuser/.dotnet/tools/ilrepack $(TargetPath) Archipelago.MultiClient.Net.dll --lib:$(BeatSaberDir)/'Beat Saber_Data'/Managed/ --lib:$(BeatSaberDir)/Libs/ --out:artifact/BeatSaberAP_bundle.dll"/>
     </Target>
 </Project>

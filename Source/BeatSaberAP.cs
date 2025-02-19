@@ -19,8 +19,9 @@ namespace BeatSaberAP
             Log = logger;
             Log.Debug("BeatSaberAP plugin running!");
 
-            APConnection.ConnectAndGetSlotData("localhost", 38281, "blok", "");
             EventHooks.SetupHooks();
+
+            APConnection.ConnectAndGetSlotData("localhost", 38281, "blok", "");
         }
 
         [OnStart]

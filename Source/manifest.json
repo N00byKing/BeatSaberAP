@@ -15,5 +15,6 @@
         "BSIPA": "^4.2.2",
         "BS Utils": "^1.12.1",
         "SongDetailsCache": "^1.4.0",
+        "CustomCampaigns": "^3.6.0",
     }
 }
