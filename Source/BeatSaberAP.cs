@@ -2,6 +2,8 @@
 using HarmonyLib;
 using IPA;
 using IPA.Logging;
+using SiraUtil.Zenject;
+using Zenject;
 
 namespace BeatSaberAP
 {
@@ -14,12 +16,13 @@ namespace BeatSaberAP
         // setup that does not require game code
         // this is only called once ever, so do once-ever initialization
         [Init]
-        public Plugin(Logger logger)
+        public Plugin(Logger logger, Zenjector zenjector)
         {
             Log = logger;
             Log.Debug("BeatSaberAP plugin running!");
 
             EventHooks.SetupHooks();
+            zenjector.Install<InjectInstaller>(Location.Menu);
 
             APConnection.ConnectAndGetSlotData("localhost", 38281, "blok", "");
         }
