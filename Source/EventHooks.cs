@@ -5,6 +5,7 @@ using HarmonyLib;
 using SongDetailsCache;
 using SongDetailsCache.Structs;
 using CustomCampaigns.UI.FlowCoordinators;
+using IPA.Utilities;
 
 [HarmonyPatch]
 public static class EventHooks {
@@ -29,12 +30,12 @@ public static class EventHooks {
         }
     }
     private static void OnLevelFailed(MissionLevelScenesTransitionSetupDataSO setupdata) {
-        GameplayCoreSceneSetupData gc_setupdata = (GameplayCoreSceneSetupData)typeof(LevelScenesTransitionSetupDataSO).GetProperty("gameplayCoreSceneSetupData", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(setupdata);
+        GameplayCoreSceneSetupData gc_setupdata = setupdata.GetProperty<GameplayCoreSceneSetupData, MissionLevelScenesTransitionSetupDataSO>("gameplayCoreSceneSetupData");
         string cause = $"Failed to clear {gc_setupdata.beatmapLevel.songName}";
         APConnection.SendDeathLink(cause);
     }
     private static async void OnLevelCleared(MissionLevelScenesTransitionSetupDataSO setupdata, MissionCompletionResults results) {
-        GameplayCoreSceneSetupData gc_setupdata = (GameplayCoreSceneSetupData)typeof(LevelScenesTransitionSetupDataSO).GetProperty("gameplayCoreSceneSetupData", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(setupdata);
+        GameplayCoreSceneSetupData gc_setupdata = setupdata.GetProperty<GameplayCoreSceneSetupData, MissionLevelScenesTransitionSetupDataSO>("gameplayCoreSceneSetupData");
 
         songdetails ??= await sdtask;
         string songhash = gc_setupdata.beatmapKey.levelId[CustomLevelLoader.kCustomLevelPrefixId.Length..];
