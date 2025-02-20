@@ -18,7 +18,7 @@ public static class APConnection {
 
     public static void ConnectAndGetSlotData(string ip, int port, string slot, string password) {
         session = ArchipelagoSessionFactory.CreateSession(ip, port);
-        LoginResult result = session.TryConnectAndLogin("Beat Saber", slot, ItemsHandlingFlags.NoItems, null, null, null, password);
+        LoginResult result = session.TryConnectAndLogin("Beat Saber", slot, ItemsHandlingFlags.AllItems, null, null, null, password);
         if (!result.Successful) {
             Plugin.Log.Error("Could not connect to Archipelago!");
             return;
