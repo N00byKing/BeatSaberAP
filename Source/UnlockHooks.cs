@@ -1,6 +1,10 @@
 using System;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
+using CustomCampaigns.Campaign.Missions;
 using CustomCampaigns.Managers;
+using CustomCampaigns.UI.FlowCoordinators;
 using HarmonyLib;
 using IPA.Utilities;
 using UnityEngine;
@@ -21,8 +25,27 @@ public class UnlockHooks : IInitializable, IDisposable {
     }
 
     [HarmonyPostfix, HarmonyPatch(typeof(CustomCampaignManager), "OnDidSelectMissionNode")]
-    private static void DenyTrackIfNotUnlocked(CustomCampaignManager __instance, MissionNodeVisualController missionNodeVisualController) {
+    private static void HookMissionSelect(CustomCampaignManager __instance, MissionNodeVisualController missionNodeVisualController) {
+        if (__instance.Campaign.info.name != APConnection.CampaignName) return;
+        BeatmapLevel level = (missionNodeVisualController.missionNode.missionData as CustomMissionDataSO)?.mission.FindSong();
+        if (level == null) return; // Download button is being shown
+        string songhash = level.levelID[CustomLevelLoader.kCustomLevelPrefixId.Length..];
+        DenyTrackIfNotUnlockedAsync(songhash);
+    }
+
+    [HarmonyPostfix, HarmonyPatch(typeof(CustomCampaignManager), "OnSongsLoaded")]
+    private static void HookSongsLoaded(CustomCampaignManager __instance) {
         _playButton.interactable = false;
-        _playButton.SetButtonText("AP: Missing Track Item");
+        _playButton.SetButtonText("Reopen campaign");
+    }
+    private static async void DenyTrackIfNotUnlockedAsync(string hash) {
+        uint mapid = await BeatSaberAP.Plugin.GetMapIDFromHashAsync(hash);
+        if (APConnection.HaveSong(mapid)) {
+            _playButton.interactable = true;
+            _playButton.SetButtonText("PLAY");
+        } else {
+            _playButton.interactable = false;
+            _playButton.SetButtonText("AP: Missing Song Item");
+        }
     }
 }
