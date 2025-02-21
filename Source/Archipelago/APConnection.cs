@@ -16,12 +16,12 @@ public static class APConnection {
     private static readonly List<uint> song_unlocks = [];
     public static string CampaignName { get; private set; }
 
-    public static void ConnectAndGetSlotData(string ip, int port, string slot, string password) {
+    public static bool ConnectAndGetSlotData(string ip, int port, string slot, string password) {
         session = ArchipelagoSessionFactory.CreateSession(ip, port);
         LoginResult result = session.TryConnectAndLogin("Beat Saber", slot, ItemsHandlingFlags.AllItems, null, null, null, password);
         if (!result.Successful) {
             Plugin.Log.Error("Could not connect to Archipelago!");
-            return;
+            return false;
         }
         Plugin.Log.Info("Connected to Archipelago");
         var success = (LoginSuccessful)result;
@@ -34,6 +34,7 @@ public static class APConnection {
         IDToNode = JsonConvert.DeserializeObject<Dictionary<uint,uint>>(success.SlotData["mapid_to_node"].ToString());
         song_unlocks.Add(JsonConvert.DeserializeObject<uint>(success.SlotData["start_song"].ToString()));
         session.Items.ItemReceived += RecvItem;
+        return true;
     }
 
     #warning TODO receive deathlink

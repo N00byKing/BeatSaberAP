@@ -8,7 +8,6 @@ using Zenject;
 public class ArchipelagoFlowCoordinator : FlowCoordinator {
 
     [Inject] private readonly MainFlowCoordinator _mainFlowCoordinator;
-    private NavigationController _navCtr;
     private ArchipelagoViewController _apViewCtr;
 
     protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
@@ -22,9 +21,10 @@ public class ArchipelagoFlowCoordinator : FlowCoordinator {
         }
     }
 
-    protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling) { }
+    protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling) {}
 
     protected override void BackButtonWasPressed(ViewController topViewController) {
+        _apViewCtr.connStatus.text = "";
         _mainFlowCoordinator.DismissFlowCoordinator(this);
     }
 }
