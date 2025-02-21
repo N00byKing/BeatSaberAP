@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using Zenject;
 
 [HarmonyPatch]
-public class UnlockHooks : IInitializable, IDisposable {
+public class LockHooks : IInitializable, IDisposable {
     [Inject] private readonly MissionLevelDetailViewController _viewCtr;
     private static Button _playButton = null;
 
