@@ -13,6 +13,9 @@
 
     <ItemGroup>
         <EmbeddedResource Include="manifest.json"/>
+        <EmbeddedResource Include="UI/connection-options.bsml">
+            <LogicalName>BeatSaberAP.connection-options.bsml</LogicalName>
+        </EmbeddedResource>
     </ItemGroup>
 
     <!-- TODO cleanup unused references -->
@@ -296,6 +299,6 @@
 
     <Target Name="CopyMod" AfterTargets="PostBuildEvent">
         <Message Importance="high" Text="Bundling Mod..." />
-        <Exec Command="/home/archuser/.dotnet/tools/ilrepack $(TargetPath) Archipelago.MultiClient.Net.dll --lib:$(BeatSaberDir)/'Beat Saber_Data'/Managed/ --lib:$(BeatSaberDir)/Libs/ --out:artifact/BeatSaberAP_bundle.dll"/>
+        <Exec Command="/home/archuser/.dotnet/tools/ilrepack $(TargetPath) Archipelago.MultiClient.Net.dll --lib:$(BeatSaberDir)/'Beat Saber_Data'/Managed/ --lib:$(BeatSaberDir)/Libs/ --lib:$(BeatSaberDir)/Plugins/ --out:artifact/BeatSaberAP_bundle.dll"/>
     </Target>
 </Project>

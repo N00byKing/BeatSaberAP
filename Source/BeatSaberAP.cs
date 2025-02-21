@@ -27,8 +27,6 @@ namespace BeatSaberAP
             Log.Debug("BeatSaberAP plugin running!");
 
             zenjector.Install<InjectInstaller>(Location.Menu);
-
-            APConnection.ConnectAndGetSlotData("localhost", 38281, "blok", "");
         }
 
         [OnStart]
