@@ -1,9 +1,5 @@
-using System.Threading.Tasks;
-using System.Reflection;
 using BeatSaberAP;
 using HarmonyLib;
-using SongDetailsCache;
-using SongDetailsCache.Structs;
 using CustomCampaigns.UI.FlowCoordinators;
 using IPA.Utilities;
 
@@ -12,8 +8,6 @@ public static class EventHooks {
     [HarmonyPostfix, HarmonyPatch(typeof(CampaignFlowCoordinator), "HandleMissionLevelSceneDidFinish")]
     private static void OnHandleMissionLevelSceneDidFinish(CampaignFlowCoordinator __instance, MissionLevelScenesTransitionSetupDataSO missionLevelScenesTransitionSetupData, MissionCompletionResults missionCompletionResults) {
         if (CustomCampaignFlowCoordinator.CustomCampaignManager.Campaign.info.name != APConnection.CampaignName) {
-            Plugin.Log.Info("Campaign is: " + CustomCampaignFlowCoordinator.CustomCampaignManager.Campaign.info.name);
-            Plugin.Log.Info("Campaign ex: " + APConnection.CampaignName);
             return;
         }
         if (missionCompletionResults.levelCompletionResults.levelEndStateType == LevelCompletionResults.LevelEndStateType.Failed) {

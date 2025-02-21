@@ -1,10 +1,7 @@
 using System;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using CustomCampaigns.Campaign.Missions;
 using CustomCampaigns.Managers;
-using CustomCampaigns.UI.FlowCoordinators;
 using HarmonyLib;
 using IPA.Utilities;
 using UnityEngine;
@@ -13,7 +10,7 @@ using Zenject;
 
 [HarmonyPatch]
 public class UnlockHooks : IInitializable, IDisposable {
-    [Inject] private MissionLevelDetailViewController _viewCtr;
+    [Inject] private readonly MissionLevelDetailViewController _viewCtr;
     private static Button _playButton = null;
 
     public void Initialize() {
@@ -35,6 +32,7 @@ public class UnlockHooks : IInitializable, IDisposable {
 
     [HarmonyPostfix, HarmonyPatch(typeof(CustomCampaignManager), "OnSongsLoaded")]
     private static void HookSongsLoaded(CustomCampaignManager __instance) {
+        if (__instance.Campaign.info.name != APConnection.CampaignName) return;
         _playButton.interactable = false;
         _playButton.SetButtonText("Reopen campaign");
     }
