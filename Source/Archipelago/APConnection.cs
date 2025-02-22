@@ -5,6 +5,7 @@ using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using BeatSaberAP;
+using CustomCampaigns.UI.FlowCoordinators;
 using Newtonsoft.Json;
 
 public static class APConnection {
@@ -55,5 +56,21 @@ public static class APConnection {
 
     public static bool HaveSong(uint mapid) {
         return song_unlocks.Contains(mapid);
+    }
+
+    public enum CampaignValidity {
+        NotAP,
+        WrongCampaign,
+        Correct
+    }
+    public static CampaignValidity CheckCampaignValid(string name) {
+        string selected = CustomCampaignFlowCoordinator.CustomCampaignManager.Campaign.info.name;
+        if (!selected.StartsWith("AP Campaign, ")) return CampaignValidity.NotAP; // None of our business
+        if (selected != APConnection.CampaignName) {
+            // User selected wrong campaign, so mismatch, or CampaignName not initialized, so not connected
+            return CampaignValidity.WrongCampaign;
+        }
+        // Campaign is correct
+        return CampaignValidity.Correct;
     }
 }

@@ -7,9 +7,8 @@ using IPA.Utilities;
 public static class EventHooks {
     [HarmonyPostfix, HarmonyPatch(typeof(CampaignFlowCoordinator), "HandleMissionLevelSceneDidFinish")]
     private static void OnHandleMissionLevelSceneDidFinish(CampaignFlowCoordinator __instance, MissionLevelScenesTransitionSetupDataSO missionLevelScenesTransitionSetupData, MissionCompletionResults missionCompletionResults) {
-        if (CustomCampaignFlowCoordinator.CustomCampaignManager.Campaign.info.name != APConnection.CampaignName) {
-            return;
-        }
+        APConnection.CampaignValidity validity = APConnection.CheckCampaignValid(CustomCampaignFlowCoordinator.CustomCampaignManager.Campaign.info.name);
+        if (validity != APConnection.CampaignValidity.Correct) return;
         if (missionCompletionResults.levelCompletionResults.levelEndStateType == LevelCompletionResults.LevelEndStateType.Failed) {
             OnLevelFailed(missionLevelScenesTransitionSetupData);
         } else if (missionCompletionResults.levelCompletionResults.levelEndStateType == LevelCompletionResults.LevelEndStateType.Cleared) {
