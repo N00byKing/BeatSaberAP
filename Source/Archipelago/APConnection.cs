@@ -12,28 +12,35 @@ public static class APConnection {
 
     private static ArchipelagoSession session = null;
     private static DeathLinkService dlservice = null;
-    private static Dictionary<uint,uint> NodeToID = null;
-    private static Dictionary<uint,uint> IDToNode = null;
-    private static readonly List<uint> song_unlocks = [];
+    private static Dictionary<uint,string> NodeToIdent = null;
+    private static Dictionary<string,uint> IdentToNode = null;
+    private static readonly List<string> song_unlocks = [];
     public static string CampaignName { get; private set; }
 
-    public static bool ConnectAndGetSlotData(string ip, int port, string slot, string password) {
-        session = ArchipelagoSessionFactory.CreateSession(ip, port);
+    public static bool ConnectAndGetSlotData(string host, int port, string slot, string password) {
+        session = ArchipelagoSessionFactory.CreateSession(host, port);
         LoginResult result = session.TryConnectAndLogin("Beat Saber", slot, ItemsHandlingFlags.AllItems, null, null, null, password);
         if (!result.Successful) {
             Plugin.Log.Error("Could not connect to Archipelago!");
             return false;
         }
         Plugin.Log.Info("Connected to Archipelago");
+        Dictionary<string,string> conninfo = new();
+        conninfo["host"] = host;
+        conninfo["port"] = port.ToString();
+        conninfo["slot"] = slot;
+        conninfo["password"] = password;
+        string json_conn = JsonConvert.SerializeObject(conninfo);
+        System.IO.File.WriteAllText("AP_ConnInfo.json", json_conn);
         var success = (LoginSuccessful)result;
         if ((long)success.SlotData["DeathLink"] == 1) {
             dlservice = session.CreateDeathLinkService();
             dlservice.EnableDeathLink();
         }
         CampaignName = (string)success.SlotData["campaign_name"];
-        NodeToID = JsonConvert.DeserializeObject<Dictionary<uint,uint>>(success.SlotData["node_to_mapid"].ToString());
-        IDToNode = JsonConvert.DeserializeObject<Dictionary<uint,uint>>(success.SlotData["mapid_to_node"].ToString());
-        song_unlocks.Add(JsonConvert.DeserializeObject<uint>(success.SlotData["start_song"].ToString()));
+        NodeToIdent = JsonConvert.DeserializeObject<Dictionary<uint,string>>(success.SlotData["node_to_songident"].ToString());
+        IdentToNode = JsonConvert.DeserializeObject<Dictionary<string,uint>>(success.SlotData["songident_to_node"].ToString());
+        song_unlocks.AddRange(JsonConvert.DeserializeObject<List<string>>(success.SlotData["start_songs"].ToString()));
         session.Items.ItemReceived += RecvItem;
         return true;
     }
@@ -46,16 +53,16 @@ public static class APConnection {
     }
 
     public static void CheckLocation(uint mapid) {
-        session.Locations.CompleteLocationChecks(IDToNode[mapid]);
+        session.Locations.CompleteLocationChecks(IdentToNode[mapid.ToString()]);
     }
 
     private static void RecvItem(ReceivedItemsHelper helper) {
         ItemInfo item = helper.DequeueItem();
-        song_unlocks.Add(NodeToID[(uint)item.ItemId]);
+        song_unlocks.Add(NodeToIdent[(uint)item.ItemId]);
     }
 
     public static bool HaveSong(uint mapid) {
-        return song_unlocks.Contains(mapid);
+        return song_unlocks.Contains(mapid.ToString());
     }
 
     public enum CampaignValidity {

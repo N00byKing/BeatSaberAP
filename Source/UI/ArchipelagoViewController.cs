@@ -3,8 +3,10 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using TMPro;
@@ -50,5 +52,20 @@ public class ArchipelagoViewController : BSMLAutomaticViewController {
             connStatus.text = "Connected Successfully";
         else
             connStatus.text = "Connection failed";
+    }
+
+    protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+        base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
+        // Try to read last connection info
+        try {
+            Dictionary<string,string> conninfo = JsonConvert.DeserializeObject<Dictionary<string,string>>(System.IO.File.ReadAllText("AP_ConnInfo.json"));
+            EnteredSlotValue(conninfo["slot"]);
+            EnteredHostValue(conninfo["host"]);
+            EnteredPortValue(conninfo["port"]);
+            EnteredPassValue(conninfo["password"]);
+        } catch (Exception e) {
+            BeatSaberAP.Plugin.Log.Info("Error accessing last connection info. This is non-fatal. Error details below:");
+            BeatSaberAP.Plugin.Log.Info(e.ToString());
+        }
     }
 }

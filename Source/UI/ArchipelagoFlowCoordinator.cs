@@ -1,8 +1,5 @@
 using BeatSaberMarkupLanguage;
-using CustomCampaigns.Managers;
-using CustomCampaigns.UI.ViewControllers;
 using HMUI;
-using UnityEngine;
 using Zenject;
 
 public class ArchipelagoFlowCoordinator : FlowCoordinator {
@@ -20,8 +17,6 @@ public class ArchipelagoFlowCoordinator : FlowCoordinator {
             ProvideInitialViewControllers(_apViewCtr);
         }
     }
-
-    protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling) {}
 
     protected override void BackButtonWasPressed(ViewController topViewController) {
         _apViewCtr.connStatus.text = "";
