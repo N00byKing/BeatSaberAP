@@ -8,7 +8,7 @@
         <PublishRelease>true</PublishRelease>
         <NoWarn>MSB3277</NoWarn>
 
-        <BeatSaberDir>/home/archuser/BSManager/BSInstances/1.40.0</BeatSaberDir>
+        <BeatSaberDir>/home/archuser/.steam/steam/steamapps/common/Beat Saber</BeatSaberDir>
     </PropertyGroup>
 
     <ItemGroup>
@@ -299,6 +299,6 @@
 
     <Target Name="CopyMod" AfterTargets="PostBuildEvent">
         <Message Importance="high" Text="Bundling Mod..." />
-        <Exec Command="/home/archuser/.dotnet/tools/ilrepack $(TargetPath) Archipelago.MultiClient.Net.dll --lib:$(BeatSaberDir)/'Beat Saber_Data'/Managed/ --lib:$(BeatSaberDir)/Libs/ --lib:$(BeatSaberDir)/Plugins/ --out:artifact/BeatSaberAP_bundle.dll"/>
+        <Exec Command="/home/archuser/.dotnet/tools/ilrepack $(TargetPath) Archipelago.MultiClient.Net.dll --lib:'$(BeatSaberDir)'/'Beat Saber_Data'/Managed/ --lib:'$(BeatSaberDir)'/Libs/ --lib:'$(BeatSaberDir)'/Plugins/ --out:artifact/BeatSaberAP_bundle.dll"/>
     </Target>
 </Project>
