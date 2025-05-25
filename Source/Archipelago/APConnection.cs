@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
@@ -38,8 +39,8 @@ public static class APConnection {
             dlservice.EnableDeathLink();
         }
         CampaignName = (string)success.SlotData["campaign_name"];
-        NodeToIdent = JsonConvert.DeserializeObject<Dictionary<uint,string>>(success.SlotData["node_to_songident"].ToString());
-        IdentToNode = JsonConvert.DeserializeObject<Dictionary<string,uint>>(success.SlotData["songident_to_node"].ToString());
+        NodeToIdent = JsonConvert.DeserializeObject<Dictionary<uint,string>>(success.SlotData["node_to_keystr"].ToString());
+        IdentToNode = JsonConvert.DeserializeObject<Dictionary<string,uint>>(success.SlotData["keystr_to_node"].ToString());
         song_unlocks.AddRange(JsonConvert.DeserializeObject<List<string>>(success.SlotData["start_songs"].ToString()));
         session.Items.ItemReceived += RecvItem;
         return true;
@@ -52,8 +53,9 @@ public static class APConnection {
         dlservice.SendDeathLink(dl);
     }
 
-    public static void CheckLocation(uint mapid) {
-        session.Locations.CompleteLocationChecks(IdentToNode[mapid.ToString()]);
+    public static async void CheckLocation(BeatmapKey key) {
+        string ident = await GenerateIdentAsync(key);
+        session.Locations.CompleteLocationChecks(IdentToNode[ident]);
     }
 
     private static void RecvItem(ReceivedItemsHelper helper) {
@@ -61,8 +63,10 @@ public static class APConnection {
         song_unlocks.Add(NodeToIdent[(uint)item.ItemId]);
     }
 
-    public static bool HaveSong(uint mapid) {
-        return song_unlocks.Contains(mapid.ToString());
+    public static async Task<bool> HaveSong(BeatmapKey key) {
+        string ident = await GenerateIdentAsync(key);
+        Plugin.Log.Info(ident);
+        return song_unlocks.Contains(ident);
     }
 
     public enum CampaignValidity {
@@ -79,5 +83,10 @@ public static class APConnection {
         }
         // Campaign is correct
         return CampaignValidity.Correct;
+    }
+
+    public static async Task<string> GenerateIdentAsync(BeatmapKey key) {
+        uint levelid = await Plugin.GetMapIDFromHashAsync(key.levelId);
+        return levelid.ToString("X") + "_" + key.beatmapCharacteristic.SerializedName() + "_" + ((int)key.difficulty);
     }
 }

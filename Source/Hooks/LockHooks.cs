@@ -29,10 +29,11 @@ public class LockHooks : IInitializable, IDisposable {
             DenyTrackWrongCampaign();
             return;
         }
-        BeatmapLevel level = (missionNodeVisualController.missionNode.missionData as CustomMissionDataSO)?.mission.FindSong();
+        Mission m = (missionNodeVisualController.missionNode.missionData as CustomMissionDataSO)?.mission;
+        BeatmapLevel level = m.FindSong();
+        BeatmapKey key = new(level.levelID[CustomLevelLoader.kCustomLevelPrefixId.Length..], m.TryGetMissionData().beatmapCharacteristic, m.TryGetMissionData().beatmapDifficulty);
         if (level == null) return; // Download button is being shown
-        string songhash = level.levelID[CustomLevelLoader.kCustomLevelPrefixId.Length..];
-        DenyTrackIfNotUnlockedAsync(songhash);
+        DenyTrackIfNotUnlockedAsync(key);
     }
 
     [HarmonyPostfix, HarmonyPatch(typeof(CustomCampaignManager), "OnSongsLoaded")]
@@ -47,9 +48,8 @@ public class LockHooks : IInitializable, IDisposable {
         _playButton.SetButtonText("AP: Wrong campaign or not connected");
     }
 
-    private static async void DenyTrackIfNotUnlockedAsync(string hash) {
-        uint mapid = await BeatSaberAP.Plugin.GetMapIDFromHashAsync(hash);
-        if (APConnection.HaveSong(mapid)) {
+    private static async void DenyTrackIfNotUnlockedAsync(BeatmapKey key) {
+        if (await APConnection.HaveSong(key)) {
             _playButton.interactable = true;
             _playButton.SetButtonText("PLAY");
         } else {

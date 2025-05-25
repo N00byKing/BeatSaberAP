@@ -20,11 +20,8 @@ public static class EventHooks {
         string cause = $"Failed to clear {gc_setupdata.beatmapLevel.songName}";
         APConnection.SendDeathLink(cause);
     }
-    private static async void OnLevelCleared(MissionLevelScenesTransitionSetupDataSO setupdata, MissionCompletionResults results) {
+    private static void OnLevelCleared(MissionLevelScenesTransitionSetupDataSO setupdata, MissionCompletionResults results) {
         GameplayCoreSceneSetupData gc_setupdata = setupdata.GetProperty<GameplayCoreSceneSetupData, LevelScenesTransitionSetupDataSO>("gameplayCoreSceneSetupData");
-
-        string songhash = gc_setupdata.beatmapKey.levelId[CustomLevelLoader.kCustomLevelPrefixId.Length..];
-        uint mapid = await Plugin.GetMapIDFromHashAsync(songhash);
-        APConnection.CheckLocation(mapid);
+        APConnection.CheckLocation(gc_setupdata.beatmapKey);
     }
 }
