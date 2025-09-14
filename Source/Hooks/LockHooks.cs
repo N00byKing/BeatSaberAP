@@ -10,7 +10,9 @@ using Zenject;
 
 [HarmonyPatch]
 public class LockHooks : IInitializable, IDisposable {
+    #pragma warning disable 0649
     [Inject] private readonly MissionLevelDetailViewController _viewCtr;
+    #pragma warning restore 0649
     private static Button _playButton = null;
 
     public void Initialize() {

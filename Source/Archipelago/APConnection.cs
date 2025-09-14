@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Archipelago.MultiClient.Net;
@@ -37,6 +38,7 @@ public static class APConnection {
         if ((long)success.SlotData["DeathLink"] == 1) {
             dlservice = session.CreateDeathLinkService();
             dlservice.EnableDeathLink();
+            dlservice.OnDeathLinkReceived += RecvDeathLink;
         }
         CampaignName = (string)success.SlotData["campaign_name"];
         NodeToIdent = JsonConvert.DeserializeObject<Dictionary<uint,string>>(success.SlotData["node_to_keystr"].ToString());
@@ -46,7 +48,10 @@ public static class APConnection {
         return true;
     }
 
-    #warning TODO receive deathlink
+    private static void RecvDeathLink(DeathLink deathLink) {
+        #warning TODO receive deathlink
+    }
+
     public static void SendDeathLink(string cause) {
         if (dlservice == null) return;
         DeathLink dl = new(session.Players.ActivePlayer.Alias, cause);
@@ -55,6 +60,7 @@ public static class APConnection {
 
     public static async void CheckLocation(BeatmapKey key) {
         string ident = await GenerateIdentAsync(key);
+        Plugin.Log.Info("Checked location " + IdentToNode[ident] + " with ident " + ident);
         session.Locations.CompleteLocationChecks(IdentToNode[ident]);
     }
 
@@ -65,7 +71,7 @@ public static class APConnection {
 
     public static async Task<bool> HaveSong(BeatmapKey key) {
         string ident = await GenerateIdentAsync(key);
-        Plugin.Log.Info(ident);
+        Plugin.Log.Debug("Queried info for:" + ident);
         return song_unlocks.Contains(ident);
     }
 

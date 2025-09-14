@@ -8,7 +8,7 @@
         <PublishRelease>true</PublishRelease>
         <NoWarn>MSB3277</NoWarn>
 
-        <BeatSaberDir>/home/archuser/.steam/steam/steamapps/common/Beat Saber</BeatSaberDir>
+        <BeatSaberDir>/home/archuser/BSManager/BSInstances/Beat Saber</BeatSaberDir>
     </PropertyGroup>
 
     <ItemGroup>
@@ -225,8 +225,7 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityWebRequestTextureModule">
-            <HintPath>$(BeatSaberDir)/Beat
-                Saber_Data/Managed/UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+            <HintPath>$(BeatSaberDir)/Beat Saber_Data/Managed/UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.VRModule">

@@ -16,13 +16,16 @@ using UnityEngine;
 [HotReload(RelativePathToLayout = @"connection-options.bsml")]
 public class ArchipelagoViewController : BSMLAutomaticViewController {
     string host = "";
-    [UIComponent("hostOut")] TextMeshProUGUI hostOut;
     string port = "";
-    [UIComponent("portOut")] TextMeshProUGUI portOut;
     string slot = "";
-    [UIComponent("slotOut")] TextMeshProUGUI slotOut;
     string pass = "";
-    [UIComponent("passOut")] TextMeshProUGUI passOut;
+    #pragma warning disable 0649
+    [UIComponent("hostOut")] readonly TextMeshProUGUI hostOut;
+    [UIComponent("portOut")] readonly TextMeshProUGUI portOut;
+    [UIComponent("slotOut")] readonly TextMeshProUGUI slotOut;
+    [UIComponent("passOut")] readonly TextMeshProUGUI passOut;
+
+    #pragma warning restore 0649
     [UIComponent("connectionStatus")] public TextMeshProUGUI connStatus;
 
     [UIAction("enteredHost")]
